@@ -216,13 +216,13 @@ bot.on("text", (ctx) => {
       console.log(user);
       console.log(user.length);
       if (ctx.message.text == "/start") {
-        if (user.length == 0) {
+        //if (user.length == 0) {
           bot2.sendMessage(ctx.from.id, "Enter the store ID");
           query(
             `INSERT INTO users VALUES ("${ctx.from.id}","WaitingId","","")`,
             "run"
           );
-        }
+        //}
       } else {
         if (user.length == 1) {
           if (user[0].status == "WaitingId") {
