@@ -126,7 +126,7 @@ bot.on("callback_query", (ctx) => {
       method: 'PATCH',
       uri: serverURL + "/order/" + command[1] + "/status",
       json: {
-        status: "Confirm",
+        status: "Confirmed",
       },
       headers: {
         'X-API-Key': 'horsepower'
