@@ -88,7 +88,7 @@ app.post("/tg/order", urlencodedParser, function (req, res) {
       }
       text = "Number: " + req.body.number + "\nFirstName: " + req.body.user.firstName + "\nLastName: " + req.body.user.lastName + "\n\n" +
         text + "\n\n<b> Total Price: " + (req.body.totalPrice / 100) + "</b>" +
-        "\n\n Phone: " + req.body.order.user.phone +
+        "\n\n Phone: " + req.body.user.phone +
         "\n Date: " + new Date(req.body.createdAt).toLocaleString()
       console.log(text);
 
