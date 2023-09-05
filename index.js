@@ -50,8 +50,8 @@ app.post("/tg/order", urlencodedParser, function (req, res) {
   if (!req.body) return res.sendStatus(400);
   query(
     "SELECT *  FROM users WHERE id=" +
-      req.body.store.externalStoreId +
-      " LIMIT 1"
+    req.body.store.externalStoreId +
+    " LIMIT 1"
   ).then(function (user) {
     console.log(user[0]);
     if (user[0].status == "WaitingOrder") {
@@ -83,13 +83,13 @@ app.post("/tg/order", urlencodedParser, function (req, res) {
           "\nAmount: " +
           req.body.products[i].amount +
           "\nPrice: " +
-          req.body.products[i].product.price;
+          (req.body.products[i].product.price / 100);
         text = text + products + "\n";
       }
-      text = "Number:"+req.body.number + "\nFirstName:" +req.body.user.firstName +  "\nLastName:" + req.body.user.lastName+ "\n\n"+
-      text + "\n\n<b> Total Price: "+req.body.totalPrice+"</b>" +
-      "\n\n Phone: "+req.body.phone +
-      "\n Date "+req.body.createdAt
+      text = "Number: " + req.body.number + "\nFirstName: " + req.body.user.firstName + "\nLastName: " + req.body.user.lastName + "\n\n" +
+        text + "\n\n<b> Total Price: " + (req.body.totalPrice / 100) + "</b>" +
+        "\n\n Phone: " + req.body.order.user.phone +
+        "\n Date: " + new Date(req.body.createdAt).toLocaleString()
       console.log(text);
 
       if ((req.body.status = "Placed")) {
@@ -132,7 +132,7 @@ bot.on("callback_query", (ctx) => {
         'X-API-Key': 'horsepower'
       }
     }
-    
+
     request(options, function (error, response, body) {
       if (!error && response.statusCode == 200) {
         console.log(body)
@@ -153,10 +153,6 @@ bot.on("callback_query", (ctx) => {
     });
   } else if (command[0] == "Canceled") {
 
-
-    
-
-
     var options = {
       method: 'PATCH',
       uri: serverURL + "/order/" + command[1] + "/status",
@@ -167,7 +163,7 @@ bot.on("callback_query", (ctx) => {
         'X-API-Key': 'horsepower'
       }
     }
-    
+
     request(options, function (error, response, body) {
       if (!error && response.statusCode == 200) {
         console.log(body)
@@ -175,8 +171,6 @@ bot.on("callback_query", (ctx) => {
     })
 
   } else if (command[0] == "WaitingForPickUp") {
-
-
 
     var options = {
       method: 'PATCH',
@@ -188,7 +182,7 @@ bot.on("callback_query", (ctx) => {
         'X-API-Key': 'horsepower'
       }
     }
-    
+
     request(options, function (error, response, body) {
       if (!error && response.statusCode == 200) {
         console.log(body)
@@ -213,6 +207,8 @@ const bonus = Markup.inlineKeyboard([
 bot.on("text", (ctx) => {
   query("SELECT *  FROM users WHERE id=" + ctx.from.id + " LIMIT 1").then(
     function (user) {
+      myMessage = ctx.message.text.split(' ');
+
       console.log(user);
       console.log(user.length);
       if (ctx.message.text == "/start") {
@@ -227,6 +223,32 @@ bot.on("text", (ctx) => {
             `UPDATE users SET status = "WaitingId"  WHERE id = '${ctx.from.id}'`,
             "run"
           );
+        }
+      } else if (myMessage[0] == "/profit") {
+        if (user[0].status != "WaitingId") {
+          var options = {
+            method: 'GET',
+            uri: serverURL + "/order/store/" + ctx.from.store_id + "/report",
+            json: {
+              startDate: myMessage[1],
+              endDate: myMessage[2],
+            },
+            headers: {
+              'X-API-Key': 'horsepower'
+            }
+          }
+
+          request(options, function (error, response, body) {
+            if (!error && response.statusCode == 200) {
+              console.log(body)
+              let text = "Number orders: "+body.orders.number+"\nStore profit: "+body.orders.storeProfit+"\nTotal store profit"+body.totalStoreProfit
+
+              bot2.sendMessage(ctx.from.id, text, {
+                parse_mode: "HTML",
+                reply_markup: keyOrder["reply_markup"],
+              });
+            }
+          })
         }
       } else {
         if (user.length == 1) {
@@ -248,7 +270,7 @@ bot.on("text", (ctx) => {
                 'X-API-Key': 'horsepower'
               }
             }
-            
+
             request(options, function (error, response, body) {
               if (!error && response.statusCode == 200) {
                 console.log(body)
