@@ -55,66 +55,66 @@ app.post("/tg/order", urlencodedParser, function (req, res) {
   // ).then(function (user) {
   //   console.log(user[0]);
   //   if (user[0].status == "WaitingOrder") {
-      let text = "";
-      let category = "";
-      let subCategory = "";
-      for (let i = 0; i < req.body.products.length; i++) {
-        // if (
-        //   typeof req.body.products[i].product.category != "undefined" &&
-        //   req.body.products[i].product.category != category
-        // ) {
-        //   category = req.body.products[i].product.category;
-        // }
-        // if (
-        //   typeof req.body.products[i].product.subCategory != "undefined" &&
-        //   req.body.products[i].product.subCategory != subCategory
-        // ) {
-        //   subCategory = req.body.products[i].product.subCategory;
-        // }
-        // "<b>Category: " +
-        // category +
-        // "</b>\n" +
-        // "<b>Subcategory: " +
-        // subCategory +
-        // "</b>\n" +
-        let products =
-          "Name: " +
-          req.body.products[i].product.name +
-          "\nAmount: " +
-          req.body.products[i].amount +
-          "\nPrice: " +
-          (req.body.products[i].product.price / 100) + "฿";
-        text = text + products + "\n";
-      }
-      text = "Number: " + req.body.number + "\nFirstName: " + req.body.user.firstName + "\nLastName: " + req.body.user.lastName + "\n\n" +
-        text + "\n\n<b> Total Price: " + (req.body.totalPrice / 100) + "฿" + "</b>" +
-        "\n\n Phone: " + req.body.user.phone +
-        "\n Date: " + new Date(req.body.createdAt).toLocaleString()
-      console.log(text);
-
-      if ((req.body.status == "Placed")) {
-        text = "<b>New order:</b>\n\n" + text;
-        const keyOrder = Markup.inlineKeyboard([
-          [Markup.button.callback("Confirm", "Confirm " + req.body._id)],
-          [Markup.button.callback("Сanсel", "Сanсel " + req.body._id)],
-        ]);
-
-        bot2.sendMessage(req.body.store.externalStoreId, text, {
-          parse_mode: "HTML",
-          reply_markup: keyOrder["reply_markup"],
-        });
-      } else if ((req.body.status == "Completed")) {
-        text = "<b>Order completed:</b>\n\n" + text;
-        bot2.sendMessage(req.body.store.externalStoreId, text, {
-          parse_mode: "HTML",
-        });
-       } else if ((req.body.status == "WaitingForPickUp") || (req.body.status == "Confirmed")) {
-        text = "<b>Сourier is assigned:</b>\n\n" + text;
-        bot2.sendMessage(req.body.store.externalStoreId, text, {
-          parse_mode: "HTML",
-        });
-       }
+  let text = "";
+  let category = "";
+  let subCategory = "";
+  for (let i = 0; i < req.body.products.length; i++) {
+    // if (
+    //   typeof req.body.products[i].product.category != "undefined" &&
+    //   req.body.products[i].product.category != category
+    // ) {
+    //   category = req.body.products[i].product.category;
     // }
+    // if (
+    //   typeof req.body.products[i].product.subCategory != "undefined" &&
+    //   req.body.products[i].product.subCategory != subCategory
+    // ) {
+    //   subCategory = req.body.products[i].product.subCategory;
+    // }
+    // "<b>Category: " +
+    // category +
+    // "</b>\n" +
+    // "<b>Subcategory: " +
+    // subCategory +
+    // "</b>\n" +
+    let products =
+      "Name: " +
+      req.body.products[i].product.name +
+      "\nAmount: " +
+      req.body.products[i].amount +
+      "\nPrice: " +
+      (req.body.products[i].product.price / 100) + "฿";
+    text = text + products + "\n";
+  }
+  text = "Number: " + req.body.number + "\nFirstName: " + req.body.user.firstName + "\nLastName: " + req.body.user.lastName + "\n\n" +
+    text + "\n\n<b> Total Price: " + (req.body.totalPrice / 100) + "฿" + "</b>" +
+    "\n\n Phone: " + req.body.user.phone +
+    "\n Date: " + new Date(req.body.createdAt).toLocaleString()
+  console.log(text);
+
+  if ((req.body.status == "Placed")) {
+    text = "<b>New order:</b>\n\n" + text;
+    const keyOrder = Markup.inlineKeyboard([
+      [Markup.button.callback("Confirm", "Confirm " + req.body._id)],
+      [Markup.button.callback("Сanсel", "Сanсel " + req.body._id)],
+    ]);
+
+    bot2.sendMessage(req.body.store.externalStoreId, text, {
+      parse_mode: "HTML",
+      reply_markup: keyOrder["reply_markup"],
+    });
+  } else if ((req.body.status == "Completed")) {
+    text = "<b>Order completed:</b>\n\n" + text;
+    bot2.sendMessage(req.body.store.externalStoreId, text, {
+      parse_mode: "HTML",
+    });
+  } else if ((req.body.status == "WaitingForPickUp") || (req.body.status == "Confirmed")) {
+    text = "<b>Сourier is assigned:</b>\n\n" + text;
+    bot2.sendMessage(req.body.store.externalStoreId, text, {
+      parse_mode: "HTML",
+    });
+  }
+  // }
   //});
 
   res.send({ message: "OK" });
@@ -230,6 +230,7 @@ bot.on("text", (ctx) => {
           );
         }
       } else if (myMessage[0] == "/profit") {
+        console.log(user[0].store_id);
         if (user[0].status != "WaitingId") {
           var options = {
             method: 'GET',
@@ -246,11 +247,10 @@ bot.on("text", (ctx) => {
           request(options, function (error, response, body) {
             if (!error && response.statusCode == 200) {
               console.log(body)
-              let text = "Number orders: "+body.orders.number+"\nStore profit: "+body.orders.storeProfit+"\nTotal store profit"+body.totalStoreProfit
+              let text = "Number orders: " + body.orders.number + "\nStore profit: " + body.orders.storeProfit + "\nTotal store profit" + body.totalStoreProfit
 
               bot2.sendMessage(ctx.from.id, text, {
                 parse_mode: "HTML",
-                reply_markup: keyOrder["reply_markup"],
               });
             }
           })
