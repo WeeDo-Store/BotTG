@@ -253,7 +253,7 @@ bot.on("text", (ctx) => {
               console.log(body)
               let text = "Total store profit: " + body.totalStoreProfit+"\n"
               for (i=0; i<body.orders.length; i++) {
-                text = text + "\n\nNumber order: " + body.orders[0].number + "\nStore profit: " + body.orders[0].storeProfit
+                text = text + "\n\nNumber order: " + body.orders[i].number + "\nStore profit: " + body.orders[i].storeProfit
               }
               bot2.sendMessage(ctx.from.id, text, {
                 parse_mode: "HTML",
