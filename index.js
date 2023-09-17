@@ -9,7 +9,8 @@ const request = require("request");
 
 const bodyParser = require("body-parser");
 
-const serverURL = "https://weedo-demo-production.up.railway.app";
+const serverURL = "https://core-production-cd57.up.railway.app";
+https://core-production-cd57.up.railway.app/docs
 
 var jsonParser = bodyParser.json();
 
@@ -127,6 +128,8 @@ bot.on("callback_query", (ctx) => {
   console.log(command[0]);
 
   if (command[0] == "Confirm") {
+    console.log("---------------------------------status");
+    console.log(serverURL + "/order/" + command[1] + "/status");
     var options = {
       method: 'PATCH',
       uri: serverURL + "/order/" + command[1] + "/status",
@@ -230,8 +233,9 @@ bot.on("text", (ctx) => {
           );
         }
       } else if (myMessage[0] == "/profit") {
-        console.log(user[0].store_id);
-        if (user[0].status != "WaitingId") {
+        console.log("-------profit-------"+user[0].store_id);
+        //if (user[0].status != "WaitingOrder") {
+          console.log(serverURL + "/order/store/" + user[0].store_id + "/report");
           var options = {
             method: 'GET',
             uri: serverURL + "/order/store/" + user[0].store_id + "/report",
@@ -254,7 +258,7 @@ bot.on("text", (ctx) => {
               });
             }
           })
-        }
+        //}
       } else {
         if (user.length == 1) {
           if (user[0].status == "WaitingId") {
