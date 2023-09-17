@@ -251,8 +251,10 @@ bot.on("text", (ctx) => {
           request(options, function (error, response, body) {
             if (!error && response.statusCode == 200) {
               console.log(body)
-              let text = "Number orders: " + body.orders.number + "\nStore profit: " + body.orders.storeProfit + "\nTotal store profit" + body.totalStoreProfit
-
+              let text = "Total store profit: " + body.totalStoreProfit+"\n"
+              for (i=0; i<body.orders.length; i++) {
+                text = text + "\n\nNumber order: " + body.orders[0].number + "\nStore profit: " + body.orders[0].storeProfit
+              }
               bot2.sendMessage(ctx.from.id, text, {
                 parse_mode: "HTML",
               });
