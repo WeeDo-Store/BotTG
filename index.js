@@ -239,7 +239,9 @@ bot.on("text", (ctx) => {
 
           request.get(serverURL + "/order/store/" + user[0].store_id + "/report?startDate="+(new Date(myMessage[1]).toISOString())+"&endDate="+(new Date(myMessage[2]).toISOString()), function (error, response, body) {
             if (!error && response.statusCode == 200) {
+              body = JSON.parse(body);
               console.log(body)
+              console.log(body.orders[0])
               let text = (new Date(myMessage[1]).toISOString())+"Total store profit: " + body.totalStoreProfit+"\n" + (new Date(myMessage[2]).toISOString())
               for (i=0; i<body.orders.length; i++) {
                 text = text + "\n\nNumber order: " + body.orders[i].number + "\nStore profit: " + body.orders[i].storeProfit
