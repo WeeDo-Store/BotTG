@@ -238,11 +238,7 @@ bot.on("text", (ctx) => {
           console.log(serverURL + "/order/store/" + user[0].store_id + "/report");
           var options = {
             method: 'GET',
-            uri: serverURL + "/order/store/" + user[0].store_id + "/report",
-            json: {
-              startDate: ""+(new Date(myMessage[1]).toISOString()),
-              endDate: ""+(new Date(myMessage[2]).toISOString()),
-            },
+            uri: serverURL + "/order/store/" + user[0].store_id + "/report?startDate="+(new Date(myMessage[1]).toISOString())+"&endDate="+(new Date(myMessage[2]).toISOString()),
             headers: {
               'X-API-Key': 'horsepower',
               'Accept': 'application/json'
