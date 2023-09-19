@@ -240,8 +240,8 @@ bot.on("text", (ctx) => {
             method: 'GET',
             uri: serverURL + "/order/store/" + user[0].store_id + "/report",
             json: {
-              startDate: new Date(myMessage[1]),
-              endDate: new Date(myMessage[2]),
+              startDate: new Date(myMessage[1]).toISOString(),
+              endDate: new Date(myMessage[2]).toISOString(),
             },
             headers: {
               'X-API-Key': 'horsepower'
