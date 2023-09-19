@@ -240,18 +240,19 @@ bot.on("text", (ctx) => {
             method: 'GET',
             uri: serverURL + "/order/store/" + user[0].store_id + "/report",
             json: {
-              startDate: (new Date(myMessage[1]).toISOString()),
-              endDate: (new Date(myMessage[2]).toISOString()),
+              startDate: ""+(new Date(myMessage[1]).toISOString()),
+              endDate: ""+(new Date(myMessage[2]).toISOString()),
             },
             headers: {
-              'X-API-Key': 'horsepower'
+              'X-API-Key': 'horsepower',
+              'Accept': 'application/json'
             }
           }
 
           request(options, function (error, response, body) {
             if (!error && response.statusCode == 200) {
               console.log(body)
-              let text = (new Date(myMessage[1]).toISOString())+"Total store profit: " + body.totalStoreProfit+"\n"
+              let text = (new Date(myMessage[1]).toISOString())+"Total store profit: " + body.totalStoreProfit+"\n" + (new Date(myMessage[2]).toISOString())
               for (i=0; i<body.orders.length; i++) {
                 text = text + "\n\nNumber order: " + body.orders[i].number + "\nStore profit: " + body.orders[i].storeProfit
               }
