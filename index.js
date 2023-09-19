@@ -242,7 +242,7 @@ bot.on("text", (ctx) => {
               body = JSON.parse(body);
               console.log(body)
               console.log(body.orders[0])
-              let text = (new Date(myMessage[1]).toISOString())+"Total store profit: " + body.totalStoreProfit+"\n" + (new Date(myMessage[2]).toISOString())
+              let text = "Total store profit: " + body.totalStoreProfit+"\n"
               for (i=0; i<body.orders.length; i++) {
                 text = text + "\n\nNumber order: " + body.orders[i].number + "\nStore profit: " + body.orders[i].storeProfit
               }
