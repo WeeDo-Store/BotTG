@@ -235,17 +235,9 @@ bot.on("text", (ctx) => {
       } else if (myMessage[0] == "/profit") {
         console.log("-------profit-------"+user[0].store_id);
         //if (user[0].status != "WaitingOrder") {
-          console.log(serverURL + "/order/store/" + user[0].store_id + "/report");
-          var options = {
-            method: 'GET',
-            uri: serverURL + "/order/store/" + user[0].store_id + "/report?startDate="+(new Date(myMessage[1]).toISOString())+"&endDate="+(new Date(myMessage[2]).toISOString()),
-            headers: {
-              'X-API-Key': 'horsepower',
-              'Accept': 'application/json'
-            }
-          }
+          console.log(serverURL + "/order/store/" + user[0].store_id + "/report?startDate="+(new Date(myMessage[1]).toISOString())+"&endDate="+(new Date(myMessage[2]).toISOString()));
 
-          request(options, function (error, response, body) {
+          request.get(serverURL + "/order/store/" + user[0].store_id + "/report?startDate="+(new Date(myMessage[1]).toISOString())+"&endDate="+(new Date(myMessage[2]).toISOString()), function (error, response, body) {
             if (!error && response.statusCode == 200) {
               console.log(body)
               let text = (new Date(myMessage[1]).toISOString())+"Total store profit: " + body.totalStoreProfit+"\n" + (new Date(myMessage[2]).toISOString())
