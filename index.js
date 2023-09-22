@@ -38,6 +38,21 @@ db.serialize(async () => {
     "CREATE TABLE IF NOT EXISTS users (id bigint primary key not null, status text, store_id text, orders text)",
     "run"
   );
+
+  request.get(serverURL + "/stores/bot-info?botType=Telegram", function (error, response, body) {
+    if (!error && response.statusCode == 200) {
+      body = JSON.parse(body);
+      console.log(body)
+      console.log(body[0])
+      for (i = 0; i < body.length; i++) {
+        query(
+          `INSERT INTO users VALUES ("${body[0].externalStoreId}","WaitingOrder","${body[0]._id}","")`,
+          "run"
+        );
+      }
+    }
+  });
+
 });
 
 app.get("/order", (req, res) => {
@@ -233,24 +248,24 @@ bot.on("text", (ctx) => {
           );
         }
       } else if (myMessage[0] == "/profit") {
-        console.log("-------profit-------"+user[0].store_id);
+        console.log("-------profit-------" + user[0].store_id);
         //if (user[0].status != "WaitingOrder") {
-          console.log(serverURL + "/order/store/" + user[0].store_id + "/report?startDate="+(new Date(myMessage[1]).toISOString())+"&endDate="+(new Date(myMessage[2]).toISOString()));
+        console.log(serverURL + "/order/store/" + user[0].store_id + "/report?startDate=" + (new Date(myMessage[1]).toISOString()) + "&endDate=" + (new Date(myMessage[2]).toISOString()));
 
-          request.get(serverURL + "/order/store/" + user[0].store_id + "/report?startDate="+(new Date(myMessage[1]).toISOString())+"&endDate="+(new Date(myMessage[2]).toISOString()), function (error, response, body) {
-            if (!error && response.statusCode == 200) {
-              body = JSON.parse(body);
-              console.log(body)
-              console.log(body.orders[0])
-              let text = "Total store profit: " + body.totalStoreProfit+"\n"
-              for (i=0; i<body.orders.length; i++) {
-                text = text + "\n\nNumber order: " + body.orders[i].number + "\nStore profit: " + body.orders[i].storeProfit
-              }
-              bot2.sendMessage(ctx.from.id, text, {
-                parse_mode: "HTML",
-              });
+        request.get(serverURL + "/order/store/" + user[0].store_id + "/report?startDate=" + (new Date(myMessage[1]).toISOString()) + "&endDate=" + (new Date(myMessage[2]).toISOString()), function (error, response, body) {
+          if (!error && response.statusCode == 200) {
+            body = JSON.parse(body);
+            console.log(body)
+            console.log(body.orders[0])
+            let text = "Total store profit: " + body.totalStoreProfit + "\n"
+            for (i = 0; i < body.orders.length; i++) {
+              text = text + "\n\nNumber order: " + body.orders[i].number + "\nStore profit: " + body.orders[i].storeProfit
             }
-          })
+            bot2.sendMessage(ctx.from.id, text, {
+              parse_mode: "HTML",
+            });
+          }
+        })
         //}
       } else {
         if (user.length == 1) {
