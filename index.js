@@ -256,7 +256,7 @@ bot.on("text", (ctx) => {
           request.get(serverURL + "/order/store/" + user[0].store_id + "/report?startDate=" + (new Date(myMessage[1]).toISOString()) + "&endDate=" + (new Date(myMessage[2]).toISOString()), function (error, response, body) {
             if (!error && response.statusCode == 200) {
               console.log(response)
-              if(!Object.keys(response.data).length) {
+              if(body=="{}") {
                 let text = "No data found";
               } else {
                 //console.log(response)
