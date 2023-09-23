@@ -234,65 +234,67 @@ bot.on("text", (ctx) => {
 
       console.log(user);
       console.log(user.length);
-      if (ctx.message.text == "/start") {
-        bot2.sendMessage(ctx.from.id, "Enter the store ID");
-        if (user.length == 0) {
-          query(
-            `INSERT INTO users VALUES ("${ctx.from.id}","WaitingId","","")`,
-            "run"
-          );
-        } else {
-          query(
-            `UPDATE users SET status = "WaitingId"  WHERE id = '${ctx.from.id}'`,
-            "run"
-          );
-        }
-      } else if (myMessage[0] == "/profit") {
-        console.log("-------profit-------" + user[0].store_id);
-        //if (user[0].status != "WaitingOrder") {
-        console.log(serverURL + "/order/store/" + user[0].store_id + "/report?startDate=" + (new Date(myMessage[1]).toISOString()) + "&endDate=" + (new Date(myMessage[2]).toISOString()));
-
-        request.get(serverURL + "/order/store/" + user[0].store_id + "/report?startDate=" + (new Date(myMessage[1]).toISOString()) + "&endDate=" + (new Date(myMessage[2]).toISOString()), function (error, response, body) {
-          if (!error && response.statusCode == 200) {
-            body = JSON.parse(body);
-            console.log(body)
-            console.log(body.orders[0])
-            let text = "Total store profit: " + body.totalStoreProfit + "\n"
-            for (i = 0; i < body.orders.length; i++) {
-              text = text + "\n\nNumber order: " + body.orders[i].number + "\nStore profit: " + body.orders[i].storeProfit
-            }
-            bot2.sendMessage(ctx.from.id, text, {
-              parse_mode: "HTML",
-            });
-          }
-        })
-        //}
-      } else {
-        if (user.length == 1) {
-          if (user[0].status == "WaitingId") {
-            bot2.sendMessage(ctx.from.id, "The store is registered");
+      if (user.length > 0) {
+        if (ctx.message.text == "/start") {
+          bot2.sendMessage(ctx.from.id, "Enter the store ID");
+          if (user.length == 0) {
             query(
-              `UPDATE users SET store_id = "${ctx.message.text}", status = "WaitingOrder"  WHERE id = '${ctx.from.id}'`,
+              `INSERT INTO users VALUES ("${ctx.from.id}","WaitingId","","")`,
               "run"
             );
+          } else {
+            query(
+              `UPDATE users SET status = "WaitingId"  WHERE id = '${ctx.from.id}'`,
+              "run"
+            );
+          }
+        } else if (myMessage[0] == "/profit") {
+          console.log("-------profit-------" + user[0].store_id);
+          //if (user[0].status != "WaitingOrder") {
+          console.log(serverURL + "/order/store/" + user[0].store_id + "/report?startDate=" + (new Date(myMessage[1]).toISOString()) + "&endDate=" + (new Date(myMessage[2]).toISOString()));
 
-            var options = {
-              method: 'PATCH',
-              uri: serverURL + "/stores/" + ctx.message.text + "/assignBot",
-              json: {
-                botType: "Telegram",
-                externalStoreId: ctx.from.id,
-              },
-              headers: {
-                'X-API-Key': 'horsepower'
+          request.get(serverURL + "/order/store/" + user[0].store_id + "/report?startDate=" + (new Date(myMessage[1]).toISOString()) + "&endDate=" + (new Date(myMessage[2]).toISOString()), function (error, response, body) {
+            if (!error && response.statusCode == 200) {
+              body = JSON.parse(body);
+              console.log(body)
+              console.log(body.orders[0])
+              let text = "Total store profit: " + body.totalStoreProfit + "\n"
+              for (i = 0; i < body.orders.length; i++) {
+                text = text + "\n\nNumber order: " + body.orders[i].number + "\nStore profit: " + body.orders[i].storeProfit
               }
+              bot2.sendMessage(ctx.from.id, text, {
+                parse_mode: "HTML",
+              });
             }
+          })
+          //}
+        } else {
+          if (user.length == 1) {
+            if (user[0].status == "WaitingId") {
+              bot2.sendMessage(ctx.from.id, "The store is registered");
+              query(
+                `UPDATE users SET store_id = "${ctx.message.text}", status = "WaitingOrder"  WHERE id = '${ctx.from.id}'`,
+                "run"
+              );
 
-            request(options, function (error, response, body) {
-              if (!error && response.statusCode == 200) {
-                console.log(body)
+              var options = {
+                method: 'PATCH',
+                uri: serverURL + "/stores/" + ctx.message.text + "/assignBot",
+                json: {
+                  botType: "Telegram",
+                  externalStoreId: ctx.from.id,
+                },
+                headers: {
+                  'X-API-Key': 'horsepower'
+                }
               }
-            })
+
+              request(options, function (error, response, body) {
+                if (!error && response.statusCode == 200) {
+                  console.log(body)
+                }
+              })
+            }
           }
         }
       }
