@@ -319,7 +319,7 @@ bot.on("text", (ctx) => {
             request(options, function (error, response, body) {
               if (!error && response.statusCode == 200) {
                 console.log(body)
-                bot2.sendMessage(ctx.callbackQuery.from.id, "Order cancelled", {
+                bot2.sendMessage(ctx.from.id, "Order cancelled", {
                   parse_mode: "HTML",
                 });
               }
