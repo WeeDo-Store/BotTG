@@ -38,21 +38,21 @@ db.serialize(async () => {
     "CREATE TABLE IF NOT EXISTS users (id bigint primary key not null, status text, store_id text, orders text)",
     "run"
   );
+});
 
-  request.get(serverURL + "/stores/bot-info?botType=Telegram", function (error, response, body) {
-    if (!error && response.statusCode == 200) {
-      body = JSON.parse(body);
-      //console.log(body)
-      console.log(body[0])
-      for (i = 0; i < body.length; i++) {
-        query(
-          `INSERT INTO users VALUES ("${body[i].externalStoreId}","WaitingOrder","${body[i]._id}","")`,
-          "run"
-        );
-      }
+
+request.get(serverURL + "/stores/bot-info?botType=Telegram", function (error, response, body) {
+  if (!error && response.statusCode == 200) {
+    body = JSON.parse(body);
+    //console.log(body)
+    console.log(body[0])
+    for (i = 0; i < body.length; i++) {
+      query(
+        `INSERT INTO users VALUES ("${body[i].externalStoreId}","WaitingOrder","${body[i]._id}","")`,
+        "run"
+      );
     }
-  });
-
+  }
 });
 
 app.get("/order", (req, res) => {
