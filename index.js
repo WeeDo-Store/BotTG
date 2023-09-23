@@ -35,7 +35,7 @@ const query = (command, method = "all") => {
 
 db.serialize(async () => {
   await query(
-    "CREATE TABLE IF NOT EXISTS users (id bigint primary key not null, status text, store_id text, orders text)",
+    "CREATE TABLE IF NOT EXISTS users (id bigint primary key not null AUTO_INCREMENT, status text, store_id text, orders text)",
     "run"
   );
 });
@@ -45,10 +45,10 @@ request.get(serverURL + "/stores/bot-info?botType=Telegram", function (error, re
   if (!error && response.statusCode == 200) {
     body = JSON.parse(body);
     //console.log(body)
-    console.log(body[0])
+    console.log(body[1]._id)
     for (i = 0; i < body.length; i++) {
       query(
-        `INSERT INTO users VALUES ("${body[i].externalStoreId}","WaitingOrder","${body[i]._id}","")`,
+        `INSERT INTO users (status, store_id, orders) VALUES ("WaitingOrder","${body[i]._id}","")`,
         "run"
       );
     }
@@ -239,7 +239,7 @@ bot.on("text", (ctx) => {
           bot2.sendMessage(ctx.from.id, "Enter the store ID");
           if (user.length == 0) {
             query(
-              `INSERT INTO users VALUES ("${ctx.from.id}","WaitingId","","")`,
+              `INSERT INTO users (status, store_id, orders) VALUES ("WaitingOrder","${body[i]._id}","")`,
               "run"
             );
           } else {
