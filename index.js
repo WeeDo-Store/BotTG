@@ -45,8 +45,8 @@ request.get(serverURL + "/stores/bot-info?botType=Telegram", function (error, re
   if (!error && response.statusCode == 200) {
     body = JSON.parse(body);
     //console.log(body)
-    console.log(body[1]._id)
     for (i = 0; i < body.length; i++) {
+      console.log(body[i]._id)
       query(
         `INSERT INTO users (id_tg, status, store_id, orders) VALUES ("${body[i].externalStoreId}","WaitingOrder","${body[i]._id}","")`,
         "run"
@@ -61,6 +61,7 @@ app.get("/order", (req, res) => {
   res.send({ message: "Test9" });
 });
 
+//Post orders
 app.post("/tg/order", urlencodedParser, function (req, res) {
   console.log(req.body.products);
   if (!req.body) return res.sendStatus(400);
@@ -136,6 +137,8 @@ app.post("/tg/order", urlencodedParser, function (req, res) {
   res.send({ message: "OK" });
 });
 
+
+//comands
 bot.on("callback_query", (ctx) => {
   console.log(ctx.callbackQuery.data);
 
@@ -176,22 +179,16 @@ bot.on("callback_query", (ctx) => {
     });
   } else if (command[0] == "Canceled") {
 
-    var options = {
-      method: 'PATCH',
-      uri: serverURL + "/order/" + command[1] + "/status",
-      json: {
-        status: "Canceled",
-      },
-      headers: {
-        'X-API-Key': 'horsepower'
-      }
-    }
+    bot2.sendMessage(ctx.callbackQuery.from.id, "Please enter the reason", {
+      parse_mode: "HTML",
+    });
 
-    request(options, function (error, response, body) {
-      if (!error && response.statusCode == 200) {
-        console.log(body)
-      }
-    })
+    query(
+      `UPDATE users SET status = "Canceled", orders = "${command[1]}"  WHERE id_tg = '${ctx.from.id}'`,
+      "run"
+    );
+
+
 
   } else if (command[0] == "WaitingForPickUp") {
 
@@ -221,18 +218,14 @@ bot.on("callback_query", (ctx) => {
   ctx.deleteMessage();
 });
 
-const bonus = Markup.inlineKeyboard([
-  [Markup.button.callback("Информация о бонусе", "Информация о бонусе")],
-  [Markup.button.callback("Подать заявку на бонус", "Подать заявку на бонус")],
-  [Markup.button.callback("Назад", "back_to_main_menu")],
-]);
 
+//text
 bot.on("text", (ctx) => {
   query("SELECT *  FROM users WHERE id_tg=" + ctx.from.id + " LIMIT 1").then(
     function (user) {
       myMessage = ctx.message.text.split(' ');
 
-      console.log(user);
+      //console.log(user);
       console.log(user.length);
       if (ctx.message.text == "/start") {
         bot2.sendMessage(ctx.from.id, "Enter the store ID");
@@ -247,38 +240,37 @@ bot.on("text", (ctx) => {
             "run"
           );
         }
-      } else if (myMessage[0] == "/profit") {
-        if (user.length > 0) {
-          console.log("-------profit-------" + user[0].store_id);
-          //if (user[0].status != "WaitingOrder") {
-          console.log(serverURL + "/order/store/" + user[0].store_id + "/report?startDate=" + (new Date(myMessage[1]).toISOString()) + "&endDate=" + (new Date(myMessage[2]).toISOString()));
-
-          request.get(serverURL + "/order/store/" + user[0].store_id + "/report?startDate=" + (new Date(myMessage[1]).toISOString()) + "&endDate=" + (new Date(myMessage[2]).toISOString()), function (error, response, body) {
-            if (!error && response.statusCode == 200) {
-              console.log(body)
-              if (body == "{}") {
-                let text = "No data found";
-                bot2.sendMessage(ctx.from.id, text, {
-                  parse_mode: "HTML",
-                });
-              } else {
-                //console.log(response)
-                body = JSON.parse(body);
-                console.log(body.orders[0])
-                let text = "Total store profit: " + body.totalStoreProfit + "\n"
-                for (i = 0; i < body.orders.length; i++) {
-                  text = text + "\n\nNumber order: " + body.orders[i].number + "\nStore profit: " + body.orders[i].storeProfit
-                }
-                bot2.sendMessage(ctx.from.id, text, {
-                  parse_mode: "HTML",
-                });
-              }
-            }
-          })
-        }
-        //}
       } else {
-        if (user.length == 1) {
+        if (user.length > 0) {
+          if (myMessage[0] == "/profit") {
+            console.log("-------profit-------" + user[0].store_id);
+            //if (user[0].status != "WaitingOrder") {
+            console.log(serverURL + "/order/store/" + user[0].store_id + "/report?startDate=" + (new Date(myMessage[1]).toISOString()) + "&endDate=" + (new Date(myMessage[2]).toISOString()));
+
+            request.get(serverURL + "/order/store/" + user[0].store_id + "/report?startDate=" + (new Date(myMessage[1]).toISOString()) + "&endDate=" + (new Date(myMessage[2]).toISOString()), function (error, response, body) {
+              if (!error && response.statusCode == 200) {
+                console.log(body)
+                if (body == "{}") {
+                  let text = "No data found";
+                  bot2.sendMessage(ctx.from.id, text, {
+                    parse_mode: "HTML",
+                  });
+                } else {
+                  //console.log(response)
+                  body = JSON.parse(body);
+                  console.log(body.orders[0])
+                  let text = "Total store profit: " + body.totalStoreProfit + "\n"
+                  for (i = 0; i < body.orders.length; i++) {
+                    text = text + "\n\nNumber order: " + body.orders[i].number + "\nStore profit: " + body.orders[i].storeProfit
+                  }
+                  bot2.sendMessage(ctx.from.id, text, {
+                    parse_mode: "HTML",
+                  });
+                }
+              }
+            })
+            //}
+          }
           if (user[0].status == "WaitingId") {
             bot2.sendMessage(ctx.from.id, "The store is registered");
             query(
@@ -303,6 +295,34 @@ bot.on("text", (ctx) => {
                 console.log(body)
               }
             })
+          } else if (user[0].status == "Canceled") {
+            query(
+              `UPDATE users SET status = "WaitingOrder"  WHERE id_tg = '${ctx.from.id}'`,
+              "run"
+            );
+
+            var options = {
+              method: 'PATCH',
+              uri: serverURL + "/order/" + user[0].orders + "/status",
+              json: {
+                status: "Canceled",
+                rejectReason: ctx.message.text,
+              },
+              headers: {
+                'X-API-Key': 'horsepower'
+              }
+            }
+
+            request(options, function (error, response, body) {
+              if (!error && response.statusCode == 200) {
+                console.log(body)
+                bot2.sendMessage(ctx.callbackQuery.from.id, "Order cancelled", {
+                  parse_mode: "HTML",
+                });
+              }
+            })
+
+            //
           }
         }
       }
