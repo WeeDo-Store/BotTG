@@ -113,7 +113,7 @@ app.post("/tg/order", urlencodedParser, function (req, res) {
     text = "<b>New order:</b>\n\n" + text;
     const keyOrder = Markup.inlineKeyboard([
       [Markup.button.callback("Confirm", "Confirm " + req.body._id)],
-      [Markup.button.callback("Сanсel", "Сanсel " + req.body._id)],
+      [Markup.button.callback("Cancel", "Cancel " + req.body._id)],
     ]);
 
     bot2.sendMessage(req.body.store.externalStoreId, text, {
