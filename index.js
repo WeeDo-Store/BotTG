@@ -42,11 +42,11 @@ db.serialize(async () => {
   request.get(serverURL + "/stores/bot-info?botType=Telegram", function (error, response, body) {
     if (!error && response.statusCode == 200) {
       body = JSON.parse(body);
-      console.log(body)
+      //console.log(body)
       console.log(body[0])
       for (i = 0; i < body.length; i++) {
         query(
-          `INSERT INTO users VALUES ("${body[0].externalStoreId}","WaitingOrder","${body[0]._id}","")`,
+          `INSERT INTO users VALUES ("${body[i].externalStoreId}","WaitingOrder","${body[i]._id}","")`,
           "run"
         );
       }
