@@ -46,7 +46,7 @@ request.get(serverURL + "/stores/bot-info?botType=Telegram", function (error, re
     body = JSON.parse(body);
     //console.log(body)
     for (i = 0; i < body.length; i++) {
-      console.log(body[i]._id)
+      console.log(body[i].externalStoreId)
       query(
         `INSERT INTO users (id_tg, status, store_id, orders) VALUES ("${body[i].externalStoreId}","WaitingOrder","${body[i]._id}","")`,
         "run"
@@ -177,7 +177,10 @@ bot.on("callback_query", (ctx) => {
       parse_mode: "HTML",
       reply_markup: keyOrder["reply_markup"],
     });
-  } else if (command[0] == "Canceled") {
+  } else if (command[0] == "Cancel") {
+
+
+    console.log("-----------------------------Canceled____________________");
 
     bot2.sendMessage(ctx.callbackQuery.from.id, "Please enter the reason", {
       parse_mode: "HTML",
