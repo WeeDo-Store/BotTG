@@ -231,10 +231,10 @@ bot.on("text", (ctx) => {
       //console.log(user);
       console.log(user.length);
       if (ctx.message.text == "/start") {
-        bot2.sendMessage(ctx.from.id, "Enter the store ID");
+        bot2.sendMessage(ctx.from.id, "Enter the store name");
         if (user.length == 0) {
           query(
-            `INSERT INTO users (id_tg, status, store_id, orders) VALUES ("${ctx.from.id}","WaitingOrder","","")`,
+            `INSERT INTO users (id_tg, status, store_id, orders) VALUES ("${ctx.from.id}","WaitingId","","")`,
             "run"
           );
         } else {
@@ -275,12 +275,6 @@ bot.on("text", (ctx) => {
             //}
           }
           if (user[0].status == "WaitingId") {
-            bot2.sendMessage(ctx.from.id, "The store is registered");
-            query(
-              `UPDATE users SET store_id = "${ctx.message.text}", status = "WaitingOrder"  WHERE id_tg = '${ctx.from.id}'`,
-              "run"
-            );
-
             var options = {
               method: 'PATCH',
               uri: serverURL + "/stores/" + ctx.message.text + "/assignBot",
@@ -295,7 +289,14 @@ bot.on("text", (ctx) => {
 
             request(options, function (error, response, body) {
               if (!error && response.statusCode == 200) {
-                console.log(body)
+                console.log(body);
+                bot2.sendMessage(ctx.from.id, "The store is registered");
+                query(
+                  `UPDATE users SET store_id = "${body._id}", status = "WaitingOrder"  WHERE id_tg = '${ctx.from.id}'`,
+                  "run"
+                );
+              } else {
+                bot2.sendMessage(ctx.from.id, "Error");
               }
             })
           } else if (user[0].status == "Canceled") {
