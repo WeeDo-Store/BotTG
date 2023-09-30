@@ -38,22 +38,23 @@ db.serialize(async () => {
     "CREATE TABLE IF NOT EXISTS users (id integer primary key autoincrement, id_tg bigint, status text, store_id text, orders text)",
     "run"
   );
-});
 
-
-request.get(serverURL + "/stores/bot-info?botType=Telegram", function (error, response, body) {
-  if (!error && response.statusCode == 200) {
-    body = JSON.parse(body);
-    //console.log(body)
-    for (i = 0; i < body.length; i++) {
-      console.log(body[i].externalStoreId)
-      query(
-        `INSERT INTO users (id_tg, status, store_id, orders) VALUES ("${body[i].externalStoreId}","WaitingOrder","${body[i]._id}","")`,
-        "run"
-      );
+  request.get(serverURL + "/stores/bot-info?botType=Telegram", function (error, response, body) {
+    if (!error && response.statusCode == 200) {
+      body = JSON.parse(body);
+      //console.log(body)
+      for (i = 0; i < body.length; i++) {
+        console.log(body[i].externalStoreId)
+        query(
+          `INSERT INTO users (id_tg, status, store_id, orders) VALUES ("${body[i].externalStoreId}","WaitingOrder","${body[i]._id}","")`,
+          "run"
+        );
+      }
     }
-  }
+  });
+  
 });
+
 
 app.get("/order", (req, res) => {
   console.log(req.params);
@@ -104,9 +105,9 @@ app.post("/tg/order", urlencodedParser, function (req, res) {
     text = text + products + "\n";
   }
   text = "Number: " + req.body.number + "\nFirstName: " + req.body.user.firstName + "\nLastName: " + req.body.user.lastName + "\n\n" +
-    text + "\n\n<b> Total Price: " + (req.body.totalPrice / 100) + "฿" + "</b>" +
-    "\n\n Phone: " + req.body.user.phone +
-    "\n Date: " + new Date(req.body.createdAt).toLocaleString()
+    text + "\n\n<b>Total Price: " + (req.body.totalPrice / 100) + "฿" + "</b>" +
+    "\n\nPhone: " + req.body.user.phone +
+    "\nDate: " + new Date(req.body.createdAt).toLocaleString()
   console.log(text);
 
   if ((req.body.status == "Placed")) {
