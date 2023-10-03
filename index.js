@@ -119,6 +119,7 @@ app.post("/tg/order", urlencodedParser, function (req, res) {
 
     bot2.sendMessage(req.body.store.externalStoreId, text, {
       parse_mode: "HTML",
+      reply_markup: keyOrder["reply_markup"],
     });
 
     // forward
