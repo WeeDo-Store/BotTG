@@ -101,11 +101,11 @@ app.post("/tg/order", urlencodedParser, function (req, res) {
       "\nAmount: " +
       req.body.products[i].amount +
       "\nPrice: " +
-      (req.body.products[i].product.price / 100) + "฿";
+      (req.body.products[i].storeProfit / 100) + "฿";
     text = text + products + "\n";
   }
   text = "Number: " + req.body.number + "\nFirstName: " + req.body.user.firstName + "\nLastName: " + req.body.user.lastName + "\n\n" +
-    text + "\n\n<b>Total Price: " + (req.body.totalPrice / 100) + "฿" + "</b>" +
+    text + "\n\n<b>Total Price: " + (req.body.price.storeProfit / 100) + "฿" + "</b>" +
     "\n\nPhone: " + req.body.user.phone +
     "\nDate: " + new Date(req.body.createdAt).toLocaleString()
   console.log(text);
