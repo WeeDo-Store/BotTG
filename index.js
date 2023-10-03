@@ -52,7 +52,7 @@ db.serialize(async () => {
       }
     }
   });
-  
+
 });
 
 
@@ -263,9 +263,9 @@ bot.on("text", (ctx) => {
                   //console.log(response)
                   body = JSON.parse(body);
                   console.log(body.orders[0])
-                  let text = "Total store profit: " + body.totalStoreProfit + "\n"
+                  let text = "Total store profit: " + body.totalStoreProfit / 100 + "฿\n"
                   for (i = 0; i < body.orders.length; i++) {
-                    text = text + "\n\nNumber order: " + body.orders[i].number + "\nStore profit: " + body.orders[i].storeProfit
+                    text = text + "\n\nNumber order: " + body.orders[i].number + "\nStore profit: " + (body.orders[i].storeProfit / 100) + "฿";
                   }
                   bot2.sendMessage(ctx.from.id, text, {
                     parse_mode: "HTML",
