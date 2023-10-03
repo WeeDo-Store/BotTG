@@ -119,18 +119,42 @@ app.post("/tg/order", urlencodedParser, function (req, res) {
 
     bot2.sendMessage(req.body.store.externalStoreId, text, {
       parse_mode: "HTML",
-      reply_markup: keyOrder["reply_markup"],
     });
+
+    // forward
+    text2 = text + "\n\n" + "Service commission: " + req.body.price.serviceCommission + "\nStore profit: " + req.body.price.storeProfit + "\nDelivery price: "
+      + req.body.price.deliveryPrice + "\nTotal price: " + req.body.totalPrice;
+    bot2.sendMessage(2021095215, text2, {
+      parse_mode: "HTML",
+    });
+    //
   } else if ((req.body.status == "Completed")) {
     text = "<b>Order completed:</b>\n\n" + text;
     bot2.sendMessage(req.body.store.externalStoreId, text, {
       parse_mode: "HTML",
     });
+
+    //forward
+    text2 = text + "\n\n" + "Service commission: " + req.body.price.serviceCommission + "\nStore profit: " + req.body.price.storeProfit + "\nDelivery price: "
+      + req.body.price.deliveryPrice + "\nTotal price: " + req.body.totalPrice;
+    bot2.sendMessage(2021095215, text2, {
+      parse_mode: "HTML",
+    });
+    //
   } else if ((req.body.status == "WaitingForPickUp") || (req.body.status == "Confirmed")) {
     text = "<b>Сourier is assigned:</b>\n\n" + text;
     bot2.sendMessage(req.body.store.externalStoreId, text, {
       parse_mode: "HTML",
     });
+
+    //forward
+    text2 = text + "\n\n" + "Service commission: " + req.body.price.serviceCommission + "\nStore profit: " + req.body.price.storeProfit + "\nDelivery price: "
+      + req.body.price.deliveryPrice + "\nTotal price: " + req.body.totalPrice;
+    bot2.sendMessage(2021095215, text2, {
+      parse_mode: "HTML",
+    });
+    //
+
   }
   // }
   //});
