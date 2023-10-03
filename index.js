@@ -122,7 +122,7 @@ app.post("/tg/order", urlencodedParser, function (req, res) {
     });
 
     // forward
-    text2 = text + "\n\nStore name: " + req.body.store.name + "\nService commission: " + req.body.price.serviceCommission + "\nStore profit: " + req.body.price.storeProfit + "\nDelivery price: "
+    text2 = text + "\n\nStore name: " + req.body.store.name + "\nStore phone: " + req.body.store.phone + "\nService commission: " + req.body.price.serviceCommission + "\nStore profit: " + req.body.price.storeProfit + "\nDelivery price: "
       + req.body.price.deliveryPrice + "\nTotal price: " + req.body.totalPrice;
     bot2.sendMessage(2021095215, text2, {
       parse_mode: "HTML",
@@ -135,7 +135,7 @@ app.post("/tg/order", urlencodedParser, function (req, res) {
     });
 
     //forward
-    text2 = text + "\n\nStore name: " + req.body.store.name + "\nService commission: " + req.body.price.serviceCommission + "\nStore profit: " + req.body.price.storeProfit + "\nDelivery price: "
+    text2 = text + "\n\nStore name: " + req.body.store.name + "\nStore phone: " + req.body.store.phone + "\nService commission: " + req.body.price.serviceCommission + "\nStore profit: " + req.body.price.storeProfit + "\nDelivery price: "
       + req.body.price.deliveryPrice + "\nTotal price: " + req.body.totalPrice;
     bot2.sendMessage(2021095215, text2, {
       parse_mode: "HTML",
@@ -148,7 +148,7 @@ app.post("/tg/order", urlencodedParser, function (req, res) {
     });
 
     //forward
-    text2 = text + "\n\nStore name: " + req.body.store.name + "\nService commission: " + req.body.price.serviceCommission + "\nStore profit: " + req.body.price.storeProfit + "\nDelivery price: "
+    text2 = text + "\n\nStore name: " + req.body.store.name + "\nStore phone: " + req.body.store.phone + "\nService commission: " + req.body.price.serviceCommission + "\nStore profit: " + req.body.price.storeProfit + "\nDelivery price: "
       + req.body.price.deliveryPrice + "\nTotal price: " + req.body.totalPrice;
     bot2.sendMessage(2021095215, text2, {
       parse_mode: "HTML",
