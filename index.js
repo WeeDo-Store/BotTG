@@ -105,7 +105,7 @@ app.post("/tg/order", urlencodedParser, function (req, res) {
     text = text + products + "\n";
   }
   text = "Number: " + req.body.number + "\nFirstName: " + req.body.user.firstName + "\nLastName: " + req.body.user.lastName + "\n\n" +
-    text + "\n\n<b>Total Price: " + (req.body.price.storeProfit/100) + "฿" + "</b>" +
+    text + "\n\n<b>Total Price: " + (req.body.price.storeProfit / 100) + "฿" + "</b>" +
     "\n\nPhone: " + req.body.user.phone +
     "\nDate: " + new Date(req.body.createdAt).toLocaleString()
   console.log(text);
@@ -121,42 +121,25 @@ app.post("/tg/order", urlencodedParser, function (req, res) {
       parse_mode: "HTML",
       reply_markup: keyOrder["reply_markup"],
     });
-
-    // forward
-    text2 = text + "\n\nStore name: " + req.body.store.name + "\nStore phone: " + req.body.store.phone + "\nService commission: " + (req.body.price.serviceCommission/100)  + "฿" + "\nStore profit: " + (req.body.price.storeProfit/100)  + "฿" + "\nDelivery price: "
-      + (req.body.price.deliveryPrice/100)  + "฿" + "\nTotal price: " + (req.body.totalPrice100)  + "฿";
-    bot2.sendMessage(2021095215, text2, {
-      parse_mode: "HTML",
-    });
-    //
   } else if ((req.body.status == "Completed")) {
     text = "<b>Order completed:</b>\n\n" + text;
     bot2.sendMessage(req.body.store.externalStoreId, text, {
       parse_mode: "HTML",
     });
-
-    //forward
-    text2 = text + "\n\nStore name: " + req.body.store.name + "\nStore phone: " + req.body.store.phone + "\nService commission: " + (req.body.price.serviceCommission/100)  + "฿" + "\nStore profit: " + (req.body.price.storeProfit/100)  + "฿" + "\nDelivery price: "
-      + (req.body.price.deliveryPrice/100)  + "฿" + "\nTotal price: " + (req.body.totalPrice100)  + "฿";
-    bot2.sendMessage(2021095215, text2, {
-      parse_mode: "HTML",
-    });
-    //
   } else if ((req.body.status == "WaitingForPickUp") || (req.body.status == "Confirmed")) {
     text = "<b>Сourier is assigned:</b>\n\n" + text;
     bot2.sendMessage(req.body.store.externalStoreId, text, {
       parse_mode: "HTML",
     });
-
-    //forward
-    text2 = text + "\n\nStore name: " + req.body.store.name + "\nStore phone: " + req.body.store.phone + "\nService commission: " + (req.body.price.serviceCommission/100)  + "฿" + "\nStore profit: " + (req.body.price.storeProfit/100)  + "฿" + "\nDelivery price: "
-      + (req.body.price.deliveryPrice/100)  + "฿" + "\nTotal price: " + (req.body.totalPrice100)  + "฿";
-    bot2.sendMessage(2021095215, text2, {
-      parse_mode: "HTML",
-    });
-    //
-
   }
+
+  //forward
+  text2 = text + "\n\nStore name: " + req.body.store.name + "\nStore phone: " + req.body.store.phone + "\nService commission: " + (req.body.price.serviceCommission / 100) + "฿" + "\nStore profit: " + (req.body.price.storeProfit / 100) + "฿" + "\nDelivery price: "
+    + (req.body.price.deliveryPrice / 100) + "฿" + "\nTotal price: " + (req.body.totalPrice / 100) + "฿";
+  bot2.sendMessage(2021095215, text2, {
+    parse_mode: "HTML",
+  });
+  //
   // }
   //});
 
@@ -345,12 +328,11 @@ bot.on("text", (ctx) => {
 
             request(options, function (error, response, body) {
               if (!error && response.statusCode == 200) {
-                body = JSON.parse(body);
                 console.log(body)
                 bot2.sendMessage(ctx.from.id, "Order cancelled", {
                   parse_mode: "HTML",
                 });
-                text2 = "Order "+body.number+" cancelled \nReason: "+ctx.message.text;
+                text2 = "Order " + body.number + " cancelled \nReason: " + ctx.message.text;
                 bot2.sendMessage(2021095215, text2, {
                   parse_mode: "HTML",
                 });
