@@ -153,7 +153,7 @@ bot.on("callback_query", (ctx) => {
   query("SELECT *  FROM users WHERE id_tg=" + ctx.callbackQuery.from.id + " LIMIT 1").then(
     function (user) {
       if (user[0].status == "Canceled") {
-        text = "You need to enter the reason for the cancellation of the last order"
+        text = "Entering the reason for canceling the last order is necessary";
         bot2.sendMessage(ctx.callbackQuery.from.id, text, {
           parse_mode: "HTML",
         });
