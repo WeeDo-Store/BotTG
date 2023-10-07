@@ -149,85 +149,96 @@ app.post("/tg/order", urlencodedParser, function (req, res) {
 
 //comands
 bot.on("callback_query", (ctx) => {
-  console.log(ctx.callbackQuery.data);
 
-  let command = ctx.callbackQuery.data.split(" ");
-  console.log(command[0]);
+  query("SELECT *  FROM users WHERE id_tg=" + ctx.callbackQuery.from.id + " LIMIT 1").then(
+    function (user) {
+      if (user[0].status == "Canceled") {
+        text = "You need to enter the reason for the cancellation of the last order"
+        bot2.sendMessage(ctx.callbackQuery.from.id, text, {
+          parse_mode: "HTML",
+        });
+      } else {
 
-  if (command[0] == "Confirm") {
-    console.log("---------------------------------status");
-    console.log(serverURL + "/order/" + command[1] + "/status");
-    var options = {
-      method: 'PATCH',
-      uri: serverURL + "/order/" + command[1] + "/status",
-      json: {
-        status: "Confirmed",
-      },
-      headers: {
-        'X-API-Key': 'horsepower'
+        console.log(ctx.callbackQuery.data);
+
+        let command = ctx.callbackQuery.data.split(" ");
+        console.log(command[0]);
+
+        if (command[0] == "Confirm") {
+          console.log("---------------------------------status");
+          console.log(serverURL + "/order/" + command[1] + "/status");
+          var options = {
+            method: 'PATCH',
+            uri: serverURL + "/order/" + command[1] + "/status",
+            json: {
+              status: "Confirmed",
+            },
+            headers: {
+              'X-API-Key': 'horsepower'
+            }
+          }
+
+          request(options, function (error, response, body) {
+            if (!error && response.statusCode == 200) {
+              console.log(body)
+            }
+          })
+
+          const keyOrder = Markup.inlineKeyboard([
+            [
+              Markup.button.callback(
+                "Waiting for pickup",
+                "WaitingForPickUp " + command[1]
+              ),
+            ],
+          ]);
+          bot2.sendMessage(ctx.callbackQuery.from.id, "Order is confirmed.", {
+            parse_mode: "HTML",
+            reply_markup: keyOrder["reply_markup"],
+          });
+        } else if (command[0] == "Cancel") {
+
+
+          console.log("-----------------------------Canceled____________________");
+
+          bot2.sendMessage(ctx.callbackQuery.from.id, "Please enter the reason", {
+            parse_mode: "HTML",
+          });
+
+          query(
+            `UPDATE users SET status = "Canceled", orders = "${command[1]}"  WHERE id_tg = '${ctx.from.id}'`,
+            "run"
+          );
+
+
+
+        } else if (command[0] == "WaitingForPickUp") {
+
+          var options = {
+            method: 'PATCH',
+            uri: serverURL + "/order/" + command[1] + "/status",
+            json: {
+              status: "WaitingForPickUp",
+            },
+            headers: {
+              'X-API-Key': 'horsepower'
+            }
+          }
+
+          request(options, function (error, response, body) {
+            if (!error && response.statusCode == 200) {
+              console.log(body)
+            }
+          })
+
+
+
+        }
+        ctx.deleteMessage();
       }
-    }
-
-    request(options, function (error, response, body) {
-      if (!error && response.statusCode == 200) {
-        console.log(body)
-      }
-    })
-
-    const keyOrder = Markup.inlineKeyboard([
-      [
-        Markup.button.callback(
-          "Waiting for pickup",
-          "WaitingForPickUp " + command[1]
-        ),
-      ],
-    ]);
-    bot2.sendMessage(ctx.callbackQuery.from.id, "Order is confirmed.", {
-      parse_mode: "HTML",
-      reply_markup: keyOrder["reply_markup"],
     });
-  } else if (command[0] == "Cancel") {
-
-
-    console.log("-----------------------------Canceled____________________");
-
-    bot2.sendMessage(ctx.callbackQuery.from.id, "Please enter the reason", {
-      parse_mode: "HTML",
-    });
-
-    query(
-      `UPDATE users SET status = "Canceled", orders = "${command[1]}"  WHERE id_tg = '${ctx.from.id}'`,
-      "run"
-    );
-
-
-
-  } else if (command[0] == "WaitingForPickUp") {
-
-    var options = {
-      method: 'PATCH',
-      uri: serverURL + "/order/" + command[1] + "/status",
-      json: {
-        status: "WaitingForPickUp",
-      },
-      headers: {
-        'X-API-Key': 'horsepower'
-      }
-    }
-
-    request(options, function (error, response, body) {
-      if (!error && response.statusCode == 200) {
-        console.log(body)
-      }
-    })
-
-
-
-  }
-
   ctx.telegram.answerCbQuery(ctx.callbackQuery.id);
 
-  ctx.deleteMessage();
 });
 
 
