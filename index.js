@@ -248,14 +248,18 @@ bot.on("callback_query", (ctx) => {
 
           request.get("https://game.helpervk.ru/weeDo/api.php?type=get", function (error, response, body) {
             if (!error && response.statusCode == 200) {
+              body = JSON.parse(body);
               for (i = 0; i < body.length; i++) {
+                console.log(body[i][1]);
                 botLine.push(body[i][1], text);
               }
             }
           })
           request.get("https://game.helpervk.ru/weeDo/apitg.php?type=get", function (error, response, body) {
             if (!error && response.statusCode == 200) {
+              body = JSON.parse(body);
               for (i = 0; i < body.length; i++) {
+                console.log(body[i][1]);
                 bot2.sendMessage(body[i][1], text, {
                   parse_mode: "HTML",
                 });
