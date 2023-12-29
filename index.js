@@ -1,6 +1,7 @@
 const { Telegraf, session, Markup, Scenes, Telegram } = require("telegraf");
 const bot = new Telegraf("6362027617:AAGjQ2YUpc0a3QjoTZ1qEp60agEMFv31tLo");
 const bot2 = new Telegram("6362027617:AAGjQ2YUpc0a3QjoTZ1qEp60agEMFv31tLo");
+const linebot = require("linebot"); //Установить line бота
 
 const sqlite3 = require("sqlite3");
 const express = require("express");
@@ -11,6 +12,13 @@ const bodyParser = require("body-parser");
 
 const serverURL = "https://core-production-cd57.up.railway.app";
 https://core-production-cd57.up.railway.app/docs
+
+var botLine = linebot({
+  channelId: 2000936218,
+  channelSecret: "a5d38eb1727055ccac8639cb0c491d37",
+  channelAccessToken: "BM35JjhrbtwIKjlWAY2kzDdHTOicp0iGt8ZKx4MUllsv92BGw1hYsgaTVUmCqeyQGOHRjuA44gkvyMk0PCvZ9eJIHV0RzAvZV83S2OOe0j7rf11UZkGX/5OSRWnpxwMtJSY8ZgZyzp3k+QIKAJe7XwdB04t89/1O/w1cDnyilFU="
+});
+
 
 var jsonParser = bodyParser.json();
 
@@ -131,6 +139,7 @@ app.post("/tg/order", urlencodedParser, function (req, res) {
     bot2.sendMessage(req.body.store.externalStoreId, text, {
       parse_mode: "HTML",
     });
+    //
   }
 
   //forward
@@ -214,6 +223,8 @@ bot.on("callback_query", (ctx) => {
 
         } else if (command[0] == "WaitingForPickUp") {
 
+          console.log("----------------------------------------------WaitingForPickUp")
+
           var options = {
             method: 'PATCH',
             uri: serverURL + "/order/" + command[1] + "/status",
@@ -231,7 +242,26 @@ bot.on("callback_query", (ctx) => {
             }
           })
 
+          // Обработка водителей
 
+          text = "New order.";
+
+          request.get("https://game.helpervk.ru/weeDo/api.php?type=get", function (error, response, body) {
+            if (!error && response.statusCode == 200) {
+              for (i = 0; i < body.length; i++) {
+                botLine.push(body[i][1], text);
+              }
+            }
+          })
+          request.get("https://game.helpervk.ru/weeDo/apitg.php?type=get", function (error, response, body) {
+            if (!error && response.statusCode == 200) {
+              for (i = 0; i < body.length; i++) {
+                bot2.sendMessage(body[i][1], text, {
+                  parse_mode: "HTML",
+                });
+              }
+            }
+          })
 
         }
         ctx.deleteMessage();
@@ -247,6 +277,15 @@ bot.on("text", (ctx) => {
   query("SELECT *  FROM users WHERE id_tg=" + ctx.from.id + " LIMIT 1").then(
     function (user) {
       myMessage = ctx.message.text.split(' ');
+
+      if (ctx.message.text == "/driver") {
+        //Привязка водителя 
+        request.get("https://game.helpervk.ru/weeDo/apitg.php?type=new&tg_id=" + ctx.from.id, function (error, response, body) {
+          if (!error && response.statusCode == 200) {
+            bot2.sendMessage(ctx.from.id, "Success");
+          }
+        })
+      }
 
       //console.log(user);
       console.log(user.length);
