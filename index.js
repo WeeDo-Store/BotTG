@@ -293,7 +293,7 @@ bot.on("text", (ctx) => {
     function (user) {
       myMessage = ctx.message.text.split(' ');
 
-      if (ctx.message.text == "/driver") {
+      if (ctx.message.text == "driver") {
         //Привязка водителя 
         request.get("https://game.helpervk.ru/weeDo/apitg.php?type=new&tg_id=" + ctx.from.id, function (error, response, body) {
           if (!error && response.statusCode == 200) {
@@ -349,6 +349,9 @@ bot.on("text", (ctx) => {
             //}
           }
           if (user[0].status == "WaitingId") {
+
+            ctx.message.text = ctx.message.text.replace(/^\s\s*/, '').replace(/\s\s*$/, '');
+
             var options = {
               method: 'PATCH',
               uri: serverURL + "/stores/" + ctx.message.text + "/assignBot",
