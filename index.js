@@ -191,7 +191,10 @@ bot.on("callback_query", (ctx) => {
             if (!error && response.statusCode == 200) {
               console.log(body)
 
-              body = JSON.parse(body);
+              console.log("driver ---------------------")
+
+
+              //body = JSON.parse(body);
 
 
 
