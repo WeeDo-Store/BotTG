@@ -144,7 +144,7 @@ app.post("/tg/order", urlencodedParser, function (req, res) {
 
   //forward
   text2 = text + "\n\nStore name: " + req.body.store.name + "\nStore phone: " + req.body.store.phone + "\nService commission: " + (req.body.price.serviceCommission / 100) + "฿" + "\nStore profit: " + (req.body.price.storeProfit / 100) + "฿" + "\nDelivery price: "
-    + (req.body.price.deliveryPrice / 100) + "฿" + "\nTotal price: " + (req.body.totalPrice / 100) + "฿";
+    + (req.body.price.deliveryPrice / 100) + "฿" + "\nTotal price: " + (req.body.totalPrice / 100) + "฿"+ "\ncountry: " + req.body.user.address.fullAddress.country  + "\ncity: " + req.body.user.address.fullAddress.city + "\nstreet: "+ req.body.user.address.fullAddress.street +"\nhouse: "+ req.body.user.address.fullAddress.house +"\npostalCode: "+ req.body.user.address.fullAddress.postalCode;
   bot2.sendMessage(2021095215, text2, {
     parse_mode: "HTML",
   });
