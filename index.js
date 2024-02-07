@@ -72,6 +72,8 @@ app.get("/order", (req, res) => {
 
 //Post orders
 app.post("/tg/order", urlencodedParser, function (req, res) {
+  console.log(req.body.user.location);
+  console.log(req.body.user.location.coordinates);
   console.log('---------------------------New order 123-------------------------------');
   console.log(req.body);
   console.log('---------------------------End order 123-------------------------------');
@@ -154,7 +156,6 @@ app.post("/tg/order", urlencodedParser, function (req, res) {
 
   bot2.sendLocation(2021095215, req.body.user.location.coordinates[0], req.body.user.location.coordinates[1]);
 
-  sendLocation
   //
   // }
   //});
