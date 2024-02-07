@@ -74,6 +74,7 @@ app.get("/order", (req, res) => {
 app.post("/tg/order", urlencodedParser, function (req, res) {
   console.log(req.body.user.location);
   console.log(req.body.user.location.coordinates);
+  console.log(req.body.user.location.coordinates[0]);
   console.log('---------------------------New order 123-------------------------------');
   console.log(req.body);
   console.log('---------------------------End order 123-------------------------------');
