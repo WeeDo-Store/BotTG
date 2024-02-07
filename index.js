@@ -155,7 +155,7 @@ app.post("/tg/order", urlencodedParser, function (req, res) {
     parse_mode: "HTML",
   });
 
-  bot2.sendLocation(2021095215, req.body.user.address.location.coordinates[0], req.body.user.address.location.coordinates[1]);
+  bot2.sendLocation(2021095215, req.body.user.address.location.coordinates[1], req.body.user.address.location.coordinates[0]);
 
   //
   // }
