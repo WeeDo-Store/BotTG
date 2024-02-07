@@ -72,7 +72,10 @@ app.get("/order", (req, res) => {
 
 //Post orders
 app.post("/tg/order", urlencodedParser, function (req, res) {
-  console.log(req.body.products);
+  console.log('---------------------------New order 123-------------------------------');
+  console.log(req.body);
+  console.log('---------------------------End order 123-------------------------------');
+
   if (!req.body) return res.sendStatus(400);
   // query(
   //   "SELECT *  FROM users WHERE id=" +
@@ -148,6 +151,10 @@ app.post("/tg/order", urlencodedParser, function (req, res) {
   bot2.sendMessage(2021095215, text2, {
     parse_mode: "HTML",
   });
+
+  bot2.sendLocation(2021095215, req.body.user.location.coordinates[0], req.body.user.location.coordinates[1]);
+
+  sendLocation
   //
   // }
   //});
