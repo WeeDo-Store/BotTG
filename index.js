@@ -80,35 +80,10 @@ app.post("/tg/order", urlencodedParser, function (req, res) {
   console.log('---------------------------End order 123-------------------------------');
 
   if (!req.body) return res.sendStatus(400);
-  // query(
-  //   "SELECT *  FROM users WHERE id=" +
-  //   req.body.store.externalStoreId +
-  //   " LIMIT 1"
-  // ).then(function (user) {
-  //   console.log(user[0]);
-  //   if (user[0].status == "WaitingOrder") {
   let text = "";
   let category = "";
   let subCategory = "";
   for (let i = 0; i < req.body.products.length; i++) {
-    // if (
-    //   typeof req.body.products[i].product.category != "undefined" &&
-    //   req.body.products[i].product.category != category
-    // ) {
-    //   category = req.body.products[i].product.category;
-    // }
-    // if (
-    //   typeof req.body.products[i].product.subCategory != "undefined" &&
-    //   req.body.products[i].product.subCategory != subCategory
-    // ) {
-    //   subCategory = req.body.products[i].product.subCategory;
-    // }
-    // "<b>Category: " +
-    // category +
-    // "</b>\n" +
-    // "<b>Subcategory: " +
-    // subCategory +
-    // "</b>\n" +
     let products =
       "Name: " +
       req.body.products[i].product.name +
@@ -158,10 +133,6 @@ app.post("/tg/order", urlencodedParser, function (req, res) {
 
   bot2.sendLocation(2021095215, req.body.user.address.location.coordinates[1], req.body.user.address.location.coordinates[0]);
 
-  //
-  // }
-  //});
-
   res.send({ message: "OK" });
 });
 
@@ -202,12 +173,6 @@ bot.on("callback_query", (ctx) => {
               console.log(body)
 
               console.log("driver ---------------------------")
-
-
-              //body = JSON.parse(body);
-
-
-
 
               // Обработка водителей
 
@@ -250,6 +215,9 @@ bot.on("callback_query", (ctx) => {
             parse_mode: "HTML",
             reply_markup: keyOrder["reply_markup"],
           });
+
+          ctx.deleteMessage();
+
         } else if (command[0] == "Cancel") {
 
 
@@ -264,7 +232,7 @@ bot.on("callback_query", (ctx) => {
             "run"
           );
 
-
+          ctx.deleteMessage();
 
         } else if (command[0] == "WaitingForPickUp") {
 
@@ -287,12 +255,8 @@ bot.on("callback_query", (ctx) => {
             }
           })
 
-          //
-          ///
-          //
-
+          ctx.deleteMessage();
         }
-        ctx.deleteMessage();
       }
     });
   ctx.telegram.answerCbQuery(ctx.callbackQuery.id);
