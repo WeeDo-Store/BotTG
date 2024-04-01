@@ -11,7 +11,6 @@ const request = require("request");
 const bodyParser = require("body-parser");
 
 const serverURL = "https://core-production-cd57.up.railway.app";
-https://core-production-cd57.up.railway.app/docs
 
 var botLine = linebot({
   channelId: 2000936218,
@@ -209,7 +208,7 @@ bot.on("callback_query", (ctx) => {
                   ),
                 ],
               ]);
-              bot2.sendMessage(ctx.callbackQuery.from.id, "Order is confirmed.", {
+              ctx.editMessageText("Order is confirmed.", {
                 parse_mode: "HTML",
                 reply_markup: keyOrder["reply_markup"],
               });
@@ -251,7 +250,7 @@ bot.on("callback_query", (ctx) => {
 
           request(options, function (error, response, body) {
             if (!error && response.statusCode == 200) {
-              bot2.sendMessage(ctx.callbackQuery.from.id, "Success", {
+              ctx.editMessageText("Success", {
                 parse_mode: "HTML",
               });
             } else {
@@ -303,7 +302,6 @@ bot.on("text", (ctx) => {
         if (user.length > 0) {
           if (myMessage[0] == "/profit") {
             console.log("-------profit-------" + user[0].store_id);
-            //if (user[0].status != "WaitingOrder") {
             console.log(serverURL + "/order/store/" + user[0].store_id + "/report?startDate=" + (new Date(myMessage[1]).toISOString()) + "&endDate=" + (new Date(myMessage[2]).toISOString()));
 
             request.get(serverURL + "/order/store/" + user[0].store_id + "/report?startDate=" + (new Date(myMessage[1]).toISOString()) + "&endDate=" + (new Date(myMessage[2]).toISOString()), function (error, response, body) {
@@ -315,7 +313,6 @@ bot.on("text", (ctx) => {
                     parse_mode: "HTML",
                   });
                 } else {
-                  //console.log(response)
                   body = JSON.parse(body);
                   console.log(body.orders[0])
                   let text = "Total store profit: " + body.totalStoreProfit / 100 + "฿\n"
