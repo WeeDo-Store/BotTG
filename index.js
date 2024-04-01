@@ -72,7 +72,7 @@ app.get("/order", (req, res) => {
 
 //Post orders
 app.post("/tg/order", urlencodedParser, function (req, res) {
-  console.log(req.body.user.address );
+  console.log(req.body.user.address);
   // console.log(req.body.user.location.coordinates);
   // console.log(req.body.user.location.coordinates[0]);
   console.log('---------------------------New order 123-------------------------------');
@@ -126,7 +126,7 @@ app.post("/tg/order", urlencodedParser, function (req, res) {
 
   //forward
   text2 = text + "\n\nStore name: " + req.body.store.name + "\nStore phone: " + req.body.store.phone + "\nService commission: " + (req.body.price.serviceCommission / 100) + "฿" + "\nStore profit: " + (req.body.price.storeProfit / 100) + "฿" + "\nDelivery price: "
-    + (req.body.price.deliveryPrice / 100) + "฿" + "\nTotal price: " + (req.body.totalPrice / 100) + "฿"+ "\ncountry: " + req.body.user.address.fullAddress.country  + "\ncity: " + req.body.user.address.fullAddress.city + "\nstreet: "+ req.body.user.address.fullAddress.street +"\nhouse: "+ req.body.user.address.fullAddress.house +"\npostalCode: "+ req.body.user.address.fullAddress.postalCode;
+    + (req.body.price.deliveryPrice / 100) + "฿" + "\nTotal price: " + (req.body.totalPrice / 100) + "฿" + "\ncountry: " + req.body.user.address.fullAddress.country + "\ncity: " + req.body.user.address.fullAddress.city + "\nstreet: " + req.body.user.address.fullAddress.street + "\nhouse: " + req.body.user.address.fullAddress.house + "\npostalCode: " + req.body.user.address.fullAddress.postalCode;
   bot2.sendMessage(2021095215, text2, {
     parse_mode: "HTML",
   });
@@ -168,6 +168,7 @@ bot.on("callback_query", (ctx) => {
             }
           }
 
+
           request(options, function (error, response, body) {
             if (!error && response.statusCode == 200) {
               console.log(body)
@@ -200,24 +201,24 @@ bot.on("callback_query", (ctx) => {
               })
 
 
+              const keyOrder = Markup.inlineKeyboard([
+                [
+                  Markup.button.callback(
+                    "Waiting for pickup",
+                    "WaitingForPickUp " + command[1]
+                  ),
+                ],
+              ]);
+              bot2.sendMessage(ctx.callbackQuery.from.id, "Order is confirmed.", {
+                parse_mode: "HTML",
+                reply_markup: keyOrder["reply_markup"],
+              });
+            } else {
+              bot2.sendMessage(ctx.callbackQuery.from.id, "Error request", {
+                parse_mode: "HTML",
+              });
             }
           })
-
-          const keyOrder = Markup.inlineKeyboard([
-            [
-              Markup.button.callback(
-                "Waiting for pickup",
-                "WaitingForPickUp " + command[1]
-              ),
-            ],
-          ]);
-          bot2.sendMessage(ctx.callbackQuery.from.id, "Order is confirmed.", {
-            parse_mode: "HTML",
-            reply_markup: keyOrder["reply_markup"],
-          });
-
-          ctx.deleteMessage();
-
         } else if (command[0] == "Cancel") {
 
 
@@ -232,7 +233,6 @@ bot.on("callback_query", (ctx) => {
             "run"
           );
 
-          ctx.deleteMessage();
 
         } else if (command[0] == "WaitingForPickUp") {
 
@@ -251,11 +251,16 @@ bot.on("callback_query", (ctx) => {
 
           request(options, function (error, response, body) {
             if (!error && response.statusCode == 200) {
-              console.log(body)
+              bot2.sendMessage(ctx.callbackQuery.from.id, "Success", {
+                parse_mode: "HTML",
+              });
+            } else {
+              bot2.sendMessage(ctx.callbackQuery.from.id, "Error request", {
+                parse_mode: "HTML",
+              });
             }
           })
 
-          ctx.deleteMessage();
         }
       }
     });
