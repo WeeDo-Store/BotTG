@@ -122,7 +122,7 @@ app.post("/tg/order", urlencodedParser, function (req, res) {
     + (req.body.price.deliveryPrice / 100) + "฿" + "\nTotal price: " + (req.body.totalPrice / 100) + "฿";
  
  
-    bot2.sendMessage("356538736", text2, {
+    bot2.sendMessage(356538736, text2, {
     parse_mode: "HTML",
   });
     //
