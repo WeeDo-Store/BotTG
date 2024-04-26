@@ -117,14 +117,14 @@ app.post("/tg/order", urlencodedParser, function (req, res) {
     });
 
     // For @maxon198
-    text2 = "Number: " + req.body.number + "\nStore name: " + req.body.store.name
-      + "\nStore profit: " + (req.body.price.storeProfit / 100) + "฿" + "\nDelivery price: "
-      + (req.body.price.deliveryPrice / 100) + "฿" + "\nTotal price: " + (req.body.totalPrice / 100) + "฿";
+    // text2 = "Number: " + req.body.number + "\nStore name: " + req.body.store.name
+    //   + "\nStore profit: " + (req.body.price.storeProfit / 100) + "฿" + "\nDelivery price: "
+    //   + (req.body.price.deliveryPrice / 100) + "฿" + "\nTotal price: " + (req.body.totalPrice / 100) + "฿";
 
 
-    bot2.sendMessage(356538736, text2, {
-      parse_mode: "HTML",
-    });
+    // bot2.sendMessage(356538736, text2, {
+    //   parse_mode: "HTML",
+    // });
     //
 
 
