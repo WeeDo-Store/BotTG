@@ -156,7 +156,7 @@ bot.on("callback_query", (ctx) => {
   query("SELECT *  FROM users WHERE id_tg=" + ctx.callbackQuery.from.id + " LIMIT 1").then(
     function (user) {
       if (user[0].status == "Canceled") {
-        text = "Entering the reason for canceling the last order is necessary";
+        text = "Entering the reason for canceling the last order is necessary or enter 'error' to cancel the cancellation";
         bot2.sendMessage(ctx.callbackQuery.from.id, text, {
           parse_mode: "HTML",
         });
@@ -370,35 +370,40 @@ bot.on("text", (ctx) => {
               }
             })
           } else if (user[0].status == "Canceled") {
+
             query(
               `UPDATE users SET status = "WaitingOrder"  WHERE id_tg = '${ctx.from.id}'`,
               "run"
             );
 
-            var options = {
-              method: 'PATCH',
-              uri: serverURL + "/order/" + user[0].orders + "/status",
-              json: {
-                status: "Canceled",
-                rejectReason: ctx.message.text,
-              },
-              headers: {
-                'X-API-Key': 'horsepower'
-              }
-            }
+            if (ctx.message.text != "error") {
 
-            request(options, function (error, response, body) {
-              if (!error && response.statusCode == 200) {
-                console.log(body)
-                bot2.sendMessage(ctx.from.id, "Order cancelled", {
-                  parse_mode: "HTML",
-                });
-                text2 = "Order " + body.number + " cancelled \nReason: " + ctx.message.text;
-                bot2.sendMessage(2021095215, text2, {
-                  parse_mode: "HTML",
-                });
+              var options = {
+                method: 'PATCH',
+                uri: serverURL + "/order/" + user[0].orders + "/status",
+                json: {
+                  status: "Canceled",
+                  rejectReason: ctx.message.text,
+                },
+                headers: {
+                  'X-API-Key': 'horsepower'
+                }
               }
-            })
+
+              request(options, function (error, response, body) {
+                if (!error && response.statusCode == 200) {
+                  console.log(body)
+                  bot2.sendMessage(ctx.from.id, "Order cancelled", {
+                    parse_mode: "HTML",
+                  });
+                  text2 = "Order " + body.number + " cancelled \nReason: " + ctx.message.text;
+                  bot2.sendMessage(2021095215, text2, {
+                    parse_mode: "HTML",
+                  });
+                }
+              })
+
+            }
 
             //
           }
