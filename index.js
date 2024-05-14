@@ -42,7 +42,7 @@ const query = (command, method = "all") => {
 
 db.serialize(async () => {
   await query(
-    "CREATE TABLE IF NOT EXISTS users (id integer primary key autoincrement, id_tg bigint, status text, store_id text, orders text)",
+    "CREATE TABLE IF NOT EXISTS users (id integer primary key autoincrement, id_tg bigint, status text, store_id text, orders text, message text)",
     "run"
   );
 
@@ -53,7 +53,7 @@ db.serialize(async () => {
       for (i = 0; i < body.length; i++) {
         console.log(body[i].externalStoreId)
         query(
-          `INSERT INTO users (id_tg, status, store_id, orders) VALUES ("${body[i].externalStoreId}","WaitingOrder","${body[i]._id}","")`,
+          `INSERT INTO users (id_tg, status, store_id, orders, message) VALUES ("${body[i].externalStoreId}","WaitingOrder","${body[i]._id}","","")`,
           "run"
         );
       }
@@ -242,8 +242,9 @@ bot.on("callback_query", (ctx) => {
             parse_mode: "HTML",
           });
 
+        
           query(
-            `UPDATE users SET status = "Canceled", orders = "${command[1]}"  WHERE id_tg = '${ctx.from.id}'`,
+            `UPDATE users SET status = "Canceled", orders = "${command[1]}", message = "${ctx.callbackQuery.message.message_id}"  WHERE id_tg = '${ctx.from.id}'`,
             "run"
           );
 
@@ -304,7 +305,7 @@ bot.on("text", (ctx) => {
         bot2.sendMessage(ctx.from.id, "Enter the store name");
         if (user.length == 0) {
           query(
-            `INSERT INTO users (id_tg, status, store_id, orders) VALUES ("${ctx.from.id}","WaitingId","","")`,
+            `INSERT INTO users (id_tg, status, store_id, orders, message) VALUES ("${ctx.from.id}","WaitingId","","","")`,
             "run"
           );
         } else {
@@ -398,6 +399,9 @@ bot.on("text", (ctx) => {
                     parse_mode: "HTML",
                   });
                   text2 = "Order " + body.number + " cancelled \nReason: " + ctx.message.text;
+
+                  bot2.deleteMessage(ctx.from.id, user[0].message);
+                  
                   bot2.sendMessage(2021095215, text2, {
                     parse_mode: "HTML",
                   });
